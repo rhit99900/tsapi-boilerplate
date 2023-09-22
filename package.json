@@ -3,9 +3,15 @@
   "version": "0.0.1",
   "description": "Command to create a boilerplate Template for Typescript/Express based API Services\"",
   "main": "bin/index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Rohit Nair",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.0.0",
+    "cross-spawn": "^7.0.3"
+  }
 }

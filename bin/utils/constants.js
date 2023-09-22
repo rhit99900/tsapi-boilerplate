@@ -1,4 +1,4 @@
-const variables = [
+const _VARS = [
   '--version',
   '--compiler',
   '--verbose',  
@@ -6,9 +6,11 @@ const variables = [
 
 const _TEST = '--test';
 const _SYNC = '--sync';
+const _DATABASE = '--database';
 
-module.exports = {
-  _variables: variables,
+export {
+  _VARS,
   _TEST,
-  _SYNC
+  _SYNC,
+  _DATABASE
 }

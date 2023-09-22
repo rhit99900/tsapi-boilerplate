@@ -9,17 +9,19 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const cp = require('child_process');
-const nodeVersion = process.versions.node;
+import chalk from 'chalk';
+import fs from 'fs';
+import path from 'path';
+import cp from 'child_process';
+import { init } from './init.js';
+import { _VARS, _TEST, _SYNC, _DATABASE } from './utils/constants.js';
+import { fileURLToPath } from 'url';
 
+const nodeVersion = process.versions.node;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const _args = process.argv.slice(2);
 
-const { _variables, _TEST, _SYNC } = require('./utils/constants');
-const { init } = require('./init');
-
-console.log(_args, _variables);
+console.log(_args, _VARS);
 
 const isTestRun = _args.includes(_TEST);
 
@@ -36,17 +38,24 @@ const processArguments = (params) => {
   data['dirName'] = !isTestRun ? params[0] : `.test/${params[0]}`;
   data['rootDir'] = path.join(__dirname, '..');
   data['sync'] = params.includes(_SYNC);
+  data['name'] = params[0].trim();
+  if(params.includes(_DATABASE)){
+    const index = params.indexOf(_DATABASE);
+    if(params[index + 1] === 'mongo') data['orm'] = 'mongoose';
+    else if(params[index + 1 === 'postgres']) data['orm'] = 'sequelize';
+    else data['orm'] = 'mongoose';
+  }  
   return data;
 }
 
 const gitStatus = cp.execSync('git status --porcelain').toString();
 
 if(gitStatus.trim() !== ''){  
-  console.log(`Please commit or stash changes before setting up the repository! This script will overwrite files in \`${_args[0]}\``);
-  console.log(`Existing because \`git status\` is not clean!`);
+  console.log(chalk.yellow(`Please commit or stash changes before setting up the repository! This script will overwrite files in \`${_args[0]}\``));
+  console.log(`Existing because \`${chalk.red('git status')}\` is not clean!`);
   console.log();
-  console.log('Resolve uncommited files:');
-  console.log(gitStatus);
+  console.log(chalk.yellow(`Resolve uncommited files:`));
+  console.log(chalk.cyan(gitStatus));
   console.log();
   if(!isTestRun){
     // Exit Process if Git Status is not clean.
@@ -68,10 +77,11 @@ console.log(
 // process.on('SIGINT', handleExit);
 // process.on('uncaughtException', handleException);
 
+
 const root = path.join(__dirname, '..');
 const dependencies = path.join(__dirname, 'dependencies');
 const args = processArguments(_args);
-console.log(args, root);
+console.log(args);
 
 init(args);
 
