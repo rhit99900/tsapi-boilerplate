@@ -44,7 +44,6 @@ function createOrUpdateDirectory(_rootDir, _dirName) {
   }
 }
 
-
 const deps = [    
   'typedi',
   'class-transformer',
@@ -133,7 +132,11 @@ function installDevDependencies(){
   });
 }
 
-function executor(root, name) {
+function copyFiles (root) {
+  
+}
+
+function executor (root, name) {
   return new Promise(async (resolve, reject) => {
     try{
       await installDependencies();
